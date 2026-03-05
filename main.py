@@ -24,9 +24,6 @@ def main():
     }
 
     for name, (search_func, output_file) in algorithms.items():
-        print()
-        print(f"***{name}***")
-
         problem = SokobanProblem(
             initial_state=initial_state, walls=walls, width=max_w, height=max_h
         )
@@ -35,25 +32,20 @@ def main():
         final_node, visited = search_func(problem)
         execution_time = time.time() - start
 
-        path = build_path(final_node)
+        export_results(
+            output_file, problem, final_node, build_path(final_node), visited
+        )
+
+        print()
+        print(f"***{name}***")
 
         if final_node is None:
             print("❌ Found no solution")
             continue
 
         print(f"✅ Finished in {execution_time:.4f} seconds")
-        export_results(output_file, problem, final_node, path, visited)
-
-        print("Initial state")
-        problem.print(problem.initial_state)
-        print(f"Resulting path\n{path}")
-        print("Final state")
-        problem.print(final_node.state)
-        print(f"Total steps: {int(len(path) / 2)}")  # each unicode char equals 2 chars
         print(f"Total cost: {final_node.cost}")
-        print(f"Visited nodes: {visited}")
         print()
-
 
 
 if __name__ == "__main__":

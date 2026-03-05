@@ -59,6 +59,8 @@ def export_results(filepath: str, problem, final_node: Node, solution_path: str,
         
         if final_node is not None:
             problem.print(final_node.state)
+        else:
+            print("❌ Found no solution")
         
         # Redirect stdout back to original
         sys.stdout = stdout_original
