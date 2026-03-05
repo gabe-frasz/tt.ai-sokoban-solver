@@ -48,20 +48,3 @@ def load_map(filepath: str, min_width: int = 0) -> (State, set, int, int):
     )
 
     return initial_state, walls, max_width, max_height
-
-def export_results(filepath: str, problem, final_node: Node, solution_path: str, visited_nodes: int):
-    with open(filepath, 'w', encoding="utf-8") as f:
-        f.write("Final state\n")
-
-        # Redirect stdout to file
-        stdout_original = sys.stdout
-        sys.stdout = f
-        
-        if final_node is not None:
-            problem.print(final_node.state)
-        
-        # Redirect stdout back to original
-        sys.stdout = stdout_original
-
-        f.write(f"Moves\n{solution_path}\n")
-        f.write(f"Visited nodes\n{visited_nodes}\n")

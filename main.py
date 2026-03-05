@@ -2,7 +2,7 @@ import sys
 import time
 
 from src.algorithms import a_star, dijkstra, greedy
-from src.io_parser import export_results, load_map
+from src.io_parser import load_map
 from src.problem import SokobanProblem
 from src.utils import build_path
 
@@ -42,8 +42,6 @@ def main():
             continue
 
         print(f"✅ Finished in {execution_time:.4f} seconds")
-        export_results(output_file, problem, final_node, path, visited)
-
         print("Initial state")
         problem.print(problem.initial_state)
         print(f"Resulting path\n{path}")
