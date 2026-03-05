@@ -34,7 +34,7 @@ def infer_action(
 
 def build_path(final_node: Node) -> str:
     if final_node is None:
-        return "No solution", 0.0, 0
+        return "No solution"
 
     vertexes = []
     curr_node = final_node
