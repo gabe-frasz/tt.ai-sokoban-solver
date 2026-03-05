@@ -1,4 +1,5 @@
 from src.entities import State
+from src.utils import WEIGHT_TO_EMOJI
 
 
 class SokobanProblem:
@@ -108,15 +109,15 @@ class SokobanProblem:
 
                 if pos == state.agent_position:
                     if pos in delivered_boxes_map:
-                        print("📦🙎", end="")
+                        print(f"{WEIGHT_TO_EMOJI[delivered_boxes_map[pos]]}🙎", end="")
                     elif state.holding is not None:
-                        print(f"🙎{state.holding}", end="")
+                        print(f"{WEIGHT_TO_EMOJI[state.holding]}🙎", end="")
                     else:
                         print("🙎  ", end="")
                 elif pos in boxes_map:
-                    print(f"📦{boxes_map[pos]} ", end="")
+                    print(f"{WEIGHT_TO_EMOJI[boxes_map[pos]]}  ", end="")
                 elif pos in delivered_boxes_map:
-                    print(f"📦{delivered_boxes_map[pos]} ", end="")
+                    print(f"{WEIGHT_TO_EMOJI[delivered_boxes_map[pos]]}  ", end="")
                 elif pos in state.targets_positions:
                     print("🟢  ", end="")
                 elif pos in self.walls:

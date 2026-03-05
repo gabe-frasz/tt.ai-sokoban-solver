@@ -1,5 +1,19 @@
 from src.entities import Node
 
+WEIGHT_TO_EMOJI = {
+    1: "1️⃣",
+    2: "2️⃣",
+    3: "3️⃣",
+    4: "4️⃣",
+    5: "5️⃣",
+    6: "6️⃣",
+    7: "7️⃣",
+    8: "8️⃣",
+    9: "9️⃣",
+}
+
+EMOJI_TO_WEIGHT = {emoji: weight for weight, emoji in WEIGHT_TO_EMOJI.items()}
+
 
 def infer_action(
     previous_position: tuple[int, int], current_position: tuple[int, int]

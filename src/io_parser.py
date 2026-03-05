@@ -1,6 +1,7 @@
 import sys
 
 from src.entities import Node, State
+from src.utils import EMOJI_TO_WEIGHT
 
 
 def load_map(filepath: str, min_width: int = 0) -> (State, set, int, int):
@@ -33,8 +34,8 @@ def load_map(filepath: str, min_width: int = 0) -> (State, set, int, int):
                 targets.add((x, y))
             elif symbol == "🙎":
                 agent_position = (x, y)
-            elif symbol.startswith("📦"):
-                weight = int(symbol.replace("📦", ""))
+            elif symbol in EMOJI_TO_WEIGHT:
+                weight = EMOJI_TO_WEIGHT[symbol]
                 boxes.add(((x, y), weight))
             # ⚪️ is ignored because if it's not on state, it's a free space
 
@@ -48,13 +49,10 @@ def load_map(filepath: str, min_width: int = 0) -> (State, set, int, int):
 
     return initial_state, walls, max_width, max_height
 
-def export_result(filepath: str, problem, final_node: Node, visited_nodes: int, backtrack_func):
-    path_str = backtrack_func(final_node)
-
+def export_results(filepath: str, problem, final_node: Node, solution_path: str, visited_nodes: int):
     with open(filepath, 'w', encoding="utf-8") as f:
-        f.write(f"Moves: {path_str}\n")
-        f.write("Final state:\n")
-        
+        f.write("Final state\n")
+
         # Redirect stdout to file
         stdout_original = sys.stdout
         sys.stdout = f
@@ -64,6 +62,6 @@ def export_result(filepath: str, problem, final_node: Node, visited_nodes: int, 
         
         # Redirect stdout back to original
         sys.stdout = stdout_original
-        
-        f.write(f"\nTotal cost: {custo_total}\n")
-        f.write(f"Visited nodes: {visited_nodes}\n")
+
+        f.write(f"Moves\n{solution_path}\n")
+        f.write(f"Visited nodes\n{visited_nodes}\n")

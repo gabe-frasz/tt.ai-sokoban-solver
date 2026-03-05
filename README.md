@@ -4,7 +4,7 @@ Implementation of common algorithms for solving a simplified sokoban game.
 
 ## TODO Code
 
-- [ ] Change box emoji to numbered squares
+- [x] Change box emoji to numbered squares
 - [ ] Add command to generate a random map
 
 ## TODO Docs
