@@ -1,4 +1,4 @@
-import sys
+import argparse
 import time
 
 from src.algorithms import a_star, dijkstra, greedy
@@ -8,19 +8,22 @@ from src.utils import build_path
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python main.py <map_file.txt> [width]")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Solucionador de Sokoban com IA (A*, Dijkstra, Ganancioso)"
+    )
+    parser.add_argument("arquivo", type=str, help="Caminho para o arquivo do mapa (entrada.txt)")
+    parser.add_argument(
+        "--largura", type=int, default=0, help="Largura adicional do mapa (opcional)"
+    )
 
-    input_file = sys.argv[1]
-    map_width = int(sys.argv[2]) if len(sys.argv) > 2 else 0
+    args = parser.parse_args()
 
-    initial_state, walls, max_w, max_h = load_map(input_file, min_width=map_width)
+    initial_state, walls, max_w, max_h = load_map(args.arquivo, min_width=args.largura)
 
     algorithms = {
         "Dijkstra": (dijkstra, "dijkstra.txt"),
-        "Greedy": (greedy, "greedy.txt"),
-        "A*": (a_star, "a_star.txt"),
+        "Ganancioso": (greedy, "ganancioso.txt"),
+        "A*": (a_star, "a_estrela.txt"),
     }
 
     for name, (search_func, output_file) in algorithms.items():
@@ -37,14 +40,14 @@ def main():
         )
 
         print()
-        print(f"***{name}***")
+        print(f"### {name} ###")
 
         if final_node is None:
-            print("❌ Found no solution")
-            continue
+            print("❌ Nenhuma solução encontrada")
+        else:
+            print(f"✅ Finalizado em {execution_time:.4f} segundos")
+            print(f"Custo total: {final_node.cost}")
 
-        print(f"✅ Finished in {execution_time:.4f} seconds")
-        print(f"Total cost: {final_node.cost}")
         print()
 
 
