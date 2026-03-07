@@ -72,7 +72,7 @@ def greedy(problem) -> (Node, int):
             if new_state in visited:
                 continue
 
-            step_cost = problem.get_cost(new_state)
+            step_cost = problem.get_cost(curr_node.state)
             new_cost = curr_node.cost + step_cost
             new_h = problem.get_heuristic(new_state)
 
