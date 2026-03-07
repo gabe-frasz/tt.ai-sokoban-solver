@@ -1,14 +1,17 @@
-from typing import NamedTuple
+from dataclasses import dataclass, field
 
 
-class State(NamedTuple):
+@dataclass(frozen=True)
+class State:
     agent_position: tuple[int, int]  # (x, y)
     holding: int | None  # box weight or None
     boxes: frozenset[tuple[tuple[int, int], int]]  # ((x, y), weight)
     targets_positions: frozenset[tuple[int, int]]  # (x, y)
-    delivered_boxes: frozenset[tuple[tuple[int, int], int]] = (
-        frozenset()
-    )  # same as boxes, helpful for output
+
+    # Same as boxes, but ignored by hash since it's just a printable helper
+    delivered_boxes: frozenset[tuple[tuple[int, int], int]] = field(
+        default_factory=frozenset, compare=False, hash=False
+    )
 
 
 class Node:
