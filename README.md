@@ -20,6 +20,7 @@ Esses algoritmos exploram o espaço de estados do problema e retornam:
   - Custo total da solução
   - Número de nós visitados
   - Tempo de execução
+
 ---
 
 # 2. Regras de Negócio e Dinâmica do Jogo
@@ -57,6 +58,8 @@ Esses algoritmos exploram o espaço de estados do problema e retornam:
 
 # 3. Estrutura do Projeto
 ```
+scripts
+ ├── benchmark.py
 src
  ├── solucao.py
  ├── algorithms.py
@@ -64,28 +67,43 @@ src
  ├── io_parser.py
  ├── problem.py
  ├── utils.py
-main.py
+gerar_mapa.py
+solucao.py
 ```
 
 O código foi dividido de forma modular para separar as responsabilidades:
 
 ### `solucao.py:`
-> É o ponto de entrada principal do programa. Responsável por ler os argumentos de linha de comando, carregar o mapa, executar os três algoritmos _(Dijkstra, Ganancioso e A*)_ e exportar os resultados para arquivos de texto.
+
+É o ponto de entrada principal do programa. Responsável por ler os argumentos de linha de comando, carregar o mapa, executar os três algoritmos _(Dijkstra, Ganancioso e A*)_ e exportar os resultados para arquivos de texto.
+
+### `gerar_mapa.py:`
+
+Gera um mapa aleatório a partir de parâmetros de largura e altura (opcionais) em um arquivo de texto para ser usado como entrada do programa.
 
 ### `src/entities.py:`
- > Contém as estruturas de dados fundamentais (`State` e `Node`).
+
+Contém as estruturas de dados fundamentais (`State` e `Node`).
 
 ### `src/problem.py:`
-  > Modela o problema de busca. Contém a lógica de transição de estados _(movimentação)_, cálculo de custo e a função heurística.
+
+Modela o problema de busca. Contém a lógica de transição de estados _(movimentação)_, cálculo de custo e a função heurística.
 
 ### `src/algorithms.py:` 
- > Implementa os algoritmos de busca _(Dijkstra, Busca Gananciosa e A*)_.
+
+Implementa os algoritmos de busca _(Dijkstra, Busca Gananciosa e A*)_.
 
 ### `src/io_parser.py:`
-  > Lida com a leitura do mapa a partir de um arquivo de texto e a escrita da solução gerada _(estado final, caminho tomado e nós visitados)_.
+
+Lida com a leitura do mapa a partir de um arquivo de texto e a escrita da solução gerada _(estado final, caminho tomado e nós visitados)_.
 
 ### `src/utils.py:` 
- > Funções utilitárias, como o mapeamento de números para emojis _(e vice-versa)_ e a tradução do caminho encontrado em setas _(➡️, ⬅️, ⬇️, ⬆️)_.
+
+Funções utilitárias, como o mapeamento de números para emojis _(e vice-versa)_ e a tradução do caminho encontrado em setas _(➡️, ⬅️, ⬇️, ⬆️)_.
+
+### `scripts/benchmark.py:`
+
+Script para gerar o gráfico com os resultados dos testes de desempenho em diferentes tamanhos de mapa.
 
 ---
 
@@ -95,14 +113,17 @@ Um dos pontos mais importantes para algoritmos de IA é como o "estado do mundo"
 No arquivo `entities.py`, temos a classe `State` (Estado):
 
 ```python
+@dataclass(frozen=True)
 class State:
     agent_position: tuple[int, int]         # Posição (x, y) do agente
     holding: int | None                     # O peso da caixa que o agente está segurando (ou None)
     boxes: frozenset[...]                   # Conjunto de caixas restantes no mapa: ((x, y), peso)
     targets_positions: frozenset[...]       # Conjunto de posições (x, y) dos alvos restantes
-    delivered_boxes: frozenset[...]         # (Apenas para exibição visual) Caixas já entregues
+    delivered_boxes: frozenset[...]         # Caixas já entregues (apenas para exibição visual)
 ```
+
 ---
+
 ### *Por que `frozenset` e `@dataclass(frozen=True)`?**
 
 Os estados precisam ser imutáveis.
@@ -203,7 +224,7 @@ python gerar_mapa.py
 
 ```bash
 python gerar_mapa.py --largura 10 --altura 10 --saida mapa_aleatorio.txt
-# ou 
+# ou somente
 python gerar_mapa.py --altura 10
 ```
 
@@ -212,7 +233,7 @@ python gerar_mapa.py --altura 10
 # 10. Estudo de caso
 Para avaliar o desempenho dos algoritmos de busca, foi realizado um estudo comparativo utilizando gráfico com os devidos resultados.
 
-![alt text](<WhatsApp Image 2026-03-07 at 23.13.11.jpeg>)
+![Gráfico dos resultados](./benchmark_result.png)
 
 O objetivo foi observar como o número de nós visitados cresce conforme o tamanho do grid aumenta.
 
@@ -220,17 +241,23 @@ O gráfico utiliza escala logarítmica, pois o crescimento do espaço de estados
 
 Em todos os experimentos foram mantidas as mesmas configurações inciais, posições de caixas, alvos e regras de custo.
 
+## ***4 x 4***
+O menor espaço de estados do experimento.
+
+   | Algoritmo | Nós visitados |
+   | --------- | ------------- |
+   | A*        | ~20           |
+   | Greedy    | ~13           |
+   | Dijkstra  | ~130          |
 
 ## ***8 x 8***
 O espaço de busca ainda é relativamente pequeno.
 
-Número aproximado de nós visitados:
-
    | Algoritmo | Nós visitados |
    | --------- | ------------- |
-   | A*        | ~250          |
-   | Greedy    | ~150          |
-   | Dijkstra  | ~1500         |
+   | A*        | ~2.000        |
+   | Greedy    | ~80           |
+   | Dijkstra  | ~8.500        |
 
 - Greedy visita poucos nós pois segue diretamente na direção da heurística.
 
@@ -244,61 +271,44 @@ O espaço de estados cresce significativamente.
 
 | Algoritmo | Nós visitados |
 | --------- | ------------- |
-| A*        | ~70           |
-| Greedy    | ~40           |
-| Dijkstra  | ~1200         |
+| A*        | ~4.500        |
+| Greedy    | ~150          |
+| Dijkstra  | ~23.000       |
 
 - A diferença entre Dijkstra e os algoritmos informados (A e Greedy)* começa a aumentar.
 
 - Greedy continua explorando poucos nós.
 
-- Dijkstra explora uma grande quantidade de estados pois realiza busca uniforme.
+- Dijkstra explora uma grande quantidade de nós.
 
 ## ***24 x 24***
-Nesse cenário o problema começa a apresentar crescimento explosivo no espaço de busca.
+Em tese, o espaço de estados deveria crescer mais rapidamente.
+Porém, como os testes foram realizados com uma geração aleatória de mapa,
+possivelmente o mapa utilizado tinha uma solução particularmente mais simples que o comum.
 
 | Algoritmo | Nós visitados |
 | --------- | ------------- |
-| A*        | ~30.000       |
-| Greedy    | ~10.000       |
-| Dijkstra  | ~90.000       |
-
-- O número de nós cresce ordens de magnitude maiores.
+| A*        | ~1.200        |
+| Greedy    | ~140          |
+| Dijkstra  | ~6.000        |
 
 - Greedy continua sendo o mais rápido.
 
 - A* mantém desempenho intermediário.
 
-- Dijkstra torna-se muito custoso.
+- Dijkstra permanece sendo o mais custoso.
 
 ## ***64 x 64***
 Claramente o efeito da explosão combinatória do espaço de estados.
 
 | Algoritmo | Nós visitados |
 | --------- | ------------- |
-| A*        | ~25.000       |
-| Greedy    | ~8.000        |
-| Dijkstra  | ~130.000      |
+| A*        | ~24.000       |
+| Greedy    | ~900          |
+| Dijkstra  | ~120.000      |
 
 - Dijkstra torna-se extremamente caro computacionalmente.
 
 - Greedy continua rápido, mas pode gerar soluções subótimas.
 
 - A* apresenta o melhor equilíbrio entre eficiência e qualidade da solução.
-
----
-
-1. README.md
-
-- [ ] Engenharia de Software: Documentar a estrutura do Estado (frozenset) e justificar que foi feito assim para otimizar o hash no mapa de visitados O(1).
-- [ ] A Matemática da Busca: Explicar explicitamente a Função Sucessora, Objetivo e Custo.
-- [ ] A Prova de Admissibilidade: Escrever o parágrafo cravando que a Heurística relaxa o problema (ignora paredes e tempo de transição sem carga), logo o custo calculado teoricamente é sempre menor ou igual ao labirinto real, garantindo o caminho ótimo.
-- [ ] O Estudo de Escalabilidade: Rodar o código nos 4 cenários (8x8, 16x16, 24x24, 64x64). Fazer uma tabela cruzando Tamanho do Mapa vs Quantidade de Estados Visitados e Tempo de Execução de cada um dos 3 algoritmos. (O Dijkstra vai sangrar aqui, registre isso em números).
-
-2. Slides
-
-- [ ] Slide 1-2 (Modelagem): Mostrar visualmente o que é um Estado (a foto do tabuleiro) e quais são as transições válidas (andar vs carregar).
-- [ ] Slide 3 (Mecânica): Mostrar o teste de objetivo (conjunto de caixas zerado).
-- [ ] Slide 4-5 (Matemática): Colocar a fórmula algébrica da Função Custo g(n) e da Função Heurística Composta h(n) na tela. Sem código. Explicar como a multiplicação pelo peso afasta o A* de caminhos burros.
-- [ ] Slide 6 (Comparativo Visual): Pegar um labirinto minúsculo resolvido. Mostrar os passos e o Custo Final encontrado pelo Dijkstra, Guloso e A*.
-- [ ] Slide 7 (O Veredito): Interpretação final. Explicar por que o Ganancioso erra a otimização de custo (é apressado), por que o Dijkstra é insano no uso de memória (é cego) e por que o A* é a ferramenta definitiva.

@@ -88,7 +88,7 @@ def rodar_benchmark():
     x_pos = range(len(map_sizes))
 
     a_star_pos = [p - bar_width for p in x_pos]
-    greedy_pos = [p + bar_width for p in x_pos]
+    greedy_pos = [p for p in x_pos]
     dijkstra_pos = [p + bar_width for p in x_pos]
 
     plt.bar(a_star_pos, nodes_history["A*"], width=bar_width, label="A*", color="#2ca02c")
