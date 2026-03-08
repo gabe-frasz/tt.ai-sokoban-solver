@@ -133,9 +133,9 @@ Sempre que o agente se move, um **novo** objeto `State` é criado em `problem.py
 
 A classe `Node` (Nó) envolve o `State` adicionando os dados necessários para a árvore de busca:
 - `parent`: O nó pai (de onde viemos, útil para reconstruir o caminho no final).
-- `cost`: O custo acumulado desde o início até este estado ($g(n)$).
-- `heuristic`: O valor da heurística estimada até o fim ($h(n)$).
-- `total`: A soma do custo e da heurística ($f(n) = g(n) + h(n)$).
+- `cost`: O custo acumulado desde o início até este estado ($`g(n)`$).
+- `heuristic`: O valor da heurística estimada até o fim ($`h(n)`$).
+- `total`: A soma do custo e da heurística ($`f(n) = g(n) + h(n)`$).
 
 ---
 
@@ -181,7 +181,7 @@ AND
 state.holding == None
 ```
 
-# 8. A Função Heurística ($h(n)$)
+# 8. A Função Heurística ($`h(n)`$)
 
 A heurística (em `problem.py -> get_heuristic`) é uma "estimativa informada" de quanto custo ainda falta
 para terminar o jogo a partir de um determinado estado. O cálculo é dividido em duas partes:
