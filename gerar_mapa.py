@@ -12,7 +12,7 @@ def generate_map(width: int, height: int, output_file: str):
     total_area = width * height
 
     # Max number of boxes set to 9 or 25% of the map area
-    max_allowed_boxes = min(9, total_area * 0.25)
+    max_allowed_boxes = min(9, int(total_area * 0.25))
     boxes_quantity = random.randint(1, max(1, max_allowed_boxes))
 
     # Walls occupy at most 15% of the map area to avoid blocking the agent
@@ -52,9 +52,8 @@ def generate_map(width: int, height: int, output_file: str):
                 line.append(symbol)
             f.write(" ".join(line) + "\n")
 
-    print(
-        f"✅ Mapa {width}x{height} gerado com {boxes_quantity} caixas e {placed_walls} paredes em '{output_file}'"
-    )
+
+    return boxes_quantity, placed_walls
 
 
 if __name__ == "__main__":
@@ -81,4 +80,7 @@ if __name__ == "__main__":
     final_width = args.largura if args.largura >= 4 else random.randint(4, 48)
     final_height = args.altura if args.altura >= 4 else random.randint(4, 48)
 
-    generate_map(final_width, final_height, args.saida)
+    boxes_quantity, placed_walls, output_file = generate_map(final_width, final_height, args.saida)
+    print(
+        f"✅ Mapa {final_width}x{final_height} gerado com {boxes_quantity} caixas e {placed_walls} paredes em '{args.saida}'"
+    )
