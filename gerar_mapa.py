@@ -80,7 +80,7 @@ if __name__ == "__main__":
     final_width = args.largura if args.largura >= 4 else random.randint(4, 48)
     final_height = args.altura if args.altura >= 4 else random.randint(4, 48)
 
-    boxes_quantity, placed_walls, output_file = generate_map(final_width, final_height, args.saida)
+    boxes_quantity, placed_walls = generate_map(final_width, final_height, args.saida)
     print(
         f"✅ Mapa {final_width}x{final_height} gerado com {boxes_quantity} caixas e {placed_walls} paredes em '{args.saida}'"
     )
